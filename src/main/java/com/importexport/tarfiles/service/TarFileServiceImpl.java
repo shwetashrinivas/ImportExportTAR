@@ -1,14 +1,9 @@
 package com.importexport.tarfiles.service;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.importexport.tarfiles.exceptions.TarFileAlreadyExistsException;
 import com.importexport.tarfiles.exceptions.TarFileNotFoundException;
 import com.importexport.tarfiles.model.TarFile;
@@ -16,26 +11,53 @@ import com.importexport.tarfiles.repository.TarFileRepository;
 
 @Service
 public class TarFileServiceImpl implements TarFileService {
-    
-    private TarFileRepository tarFileRepo; 
-    
-    @Autowired
-    public TarFileServiceImpl(TarFileRepository tarFileRepo) {
-		super();
+
+	private TarFileRepository tarFileRepo;
+
+	@Autowired
+	public TarFileServiceImpl(TarFileRepository tarFileRepo) {
 		this.tarFileRepo = tarFileRepo;
 	}
 
-	public String importTARFile(String fileTitle, MultipartFile file) throws TarFileAlreadyExistsException, IOException { 
-        TarFile tarFile = new TarFile(fileTitle); 
-        tarFile.setFile(
-          new Binary(BsonBinarySubType.BINARY, file.getBytes())); 
-        tarFile = tarFileRepo.insert(tarFile); return tarFile.getId(); 
-    }
- 
-    public TarFile exportTARFile(String id) throws TarFileNotFoundException{ 
-        return tarFileRepo.findById(id).get(); 
-    }
-    
+//	@Override
+//	public TarFile importTARFile(TarFile file) throws TarFileAlreadyExistsException, IOException {
+//		if (file.getFileTitle().matches("([a-zA-Z0-9\\s_\\\\.\\-\\(\\):])+(.tar|.tar.xz)$")) {
+//			if (tarFileRepo.findByFileName(tarFile.getFileName()) == null) {
+//				TarFile savedFile = tarFileRepo.save(tarFile);
+//				ResponseTarFile responseTarFile = new ResponseTarFile();
+//				responseTarFile.setFileId(savedFile.getFileId());
+//				responseTarFile.setFileName(savedFile.getFileTitle());
+//				responseTarFile.setFileUri(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/tarFile/")
+//						.path(savedFile.getFileTitle()).toUriString());
+//				return responseTarFile;
+//			} else {
+//				throw new TarFileAlreadyExistsException(environment.getProperty("tarFileAlreadyExists.message"));
+//			}
+//		} else {
+//			throw new InvalidFileNameException(environment.getProperty("invalidFileName.message"));
+//		}
+//	}
+
+	@Override
+	public TarFile importTARFile(TarFile tarFile) throws TarFileAlreadyExistsException {
+		if (!tarFileRepo.existsByFileTitle(tarFile.getFileTitle())) {
+			TarFile file = tarFileRepo.save(tarFile);
+			return file;
+		} else
+			throw new TarFileAlreadyExistsException("This TAR file already exists in the DB");
+	}
+	
+	@Override
+	public TarFile exportTARFile(String fileTitle) throws TarFileNotFoundException {
+		TarFile tarFile = tarFileRepo.findByFileTitle(fileTitle);
+		if (tarFile != null) {
+			return tarFile;
+		} else {
+			throw new TarFileNotFoundException("Tar File doesn't exist. Please check name again!");
+		}
+	}
+
+	@Override
 	public List<TarFile> listAllTarFiles() {
 		return tarFileRepo.findAll();
 	}

@@ -13,15 +13,14 @@ public class TarFile {
     private String fileTitle;
         
     private Binary file;
+    
+    public TarFile() {}
 
 	public TarFile(String id, String fileTitle, Binary file) {
 		super();
 		this.id = id;
 		this.fileTitle = fileTitle;
 		this.file = file;
-	}
-
-	public TarFile(String fileTitle) {
 	}
 
 	public String getId() {

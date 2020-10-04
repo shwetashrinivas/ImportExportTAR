@@ -7,5 +7,7 @@ import com.importexport.tarfiles.model.TarFile;
 
 @Repository
 public interface TarFileRepository extends MongoRepository<TarFile, String> { 
-	
+	public TarFile findByFileTitle(String fileTitle);
+
+	boolean existsByFileTitle(String fileTitle);
 }
