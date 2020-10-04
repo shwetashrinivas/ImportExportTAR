@@ -1,10 +1,10 @@
 package com.importexport.tarfiles.exceptions;
 
-public class TarFileAlreadyExists extends Exception{
+public class TarFileAlreadyExistsException extends Exception{
 
 	private static final long serialVersionUID = 1L;
 
-	public TarFileAlreadyExists(String message) {
+	public TarFileAlreadyExistsException(String message) {
 		super(message);
 	}
 

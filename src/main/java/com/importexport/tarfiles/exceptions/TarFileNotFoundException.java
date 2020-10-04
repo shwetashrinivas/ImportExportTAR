@@ -1,10 +1,10 @@
 package com.importexport.tarfiles.exceptions;
 
-public class TarFileNotFound extends Exception{
+public class TarFileNotFoundException extends Exception{
 
 	private static final long serialVersionUID = 1L;
 
-	public TarFileNotFound(String message) {
+	public TarFileNotFoundException(String message) {
 		super(message);
 	}
 

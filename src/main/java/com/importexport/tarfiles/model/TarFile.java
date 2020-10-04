@@ -21,6 +21,9 @@ public class TarFile {
 		this.file = file;
 	}
 
+	public TarFile(String fileTitle) {
+	}
+
 	public String getId() {
 		return id;
 	}
